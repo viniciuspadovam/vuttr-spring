@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Tools {
 	
-	public Tools(RegisterToolData tool) {
+	public Tools(RequestToolData tool) {
 		this.title = tool.title();
 		this.link = tool.link();
 		this.description = tool.description();
 		this.tags = tool.tags();
+		this.active = true;
 	}
 	
 	@Id
@@ -26,5 +27,6 @@ public class Tools {
 	private String link;
 	private String description;
 	private List<String> tags;
+	private Boolean active;
 	
 }
