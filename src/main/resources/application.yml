@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      database: vuttr_challenge
+      host: mongo_db
+      port: 27017
+
+server:
+  port: 3000
