@@ -2,8 +2,8 @@ spring:
   data:
     mongodb:
       database: vuttr_challenge
-      host: mongo_db
-      port: 27017
+      host: ${DB_HOST:localhost}
+      port: ${DB_PORT:27017}
 
 server:
-  port: 3000
+  port: ${API_PORT:3000}

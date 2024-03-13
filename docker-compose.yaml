@@ -2,15 +2,25 @@ version: "3"
 
 services:
   mongo_db:
+    env_file: .env
     image: mongo:latest
     container_name: mongo_db
+    command: mongod --port 27018
+    expose:
+      - ${MONGO_EXTERNAL_PORT}
     ports:
-      - 27017:27017
+      - ${MONGO_EXTERNAL_PORT}:${MONGO_CONTAINER_PORT}
 
   spring_app:
+    env_file: .env
     image: spring_app:1.0
     container_name: spring_app
     ports:
-      - 3000:3000
+      - ${API_EXTERNAL_PORT}:${API_CONTAINER_PORT}
+    environment:
+      - DB_HOST=${MONGO_HOST}
+      - DB_PORT=${MONGO_EXTERNAL_PORT}
+      - API_PORT=${API_CONTAINER_PORT}
     links:
       - mongo_db
+    
