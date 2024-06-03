@@ -43,14 +43,14 @@ public class ToolsService {
 		return toolsPage;
 	}
 	
-	public void saveTool(Tools tool) throws BadRequestException {		
+	public Tools saveTool(Tools tool) throws BadRequestException {		
 		Boolean exists = repository.existsByTitleAndActiveTrue(tool.getTitle());
 		
 		if(exists) {
 			throw new BadRequestException("This tool already exist.");
 		}
 		
-		repository.save(tool);
+		return repository.save(tool);
 	}
 	
 	public void logicDeleteTool(String id) {

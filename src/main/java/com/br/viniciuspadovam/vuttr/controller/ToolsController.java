@@ -1,7 +1,5 @@
 package com.br.viniciuspadovam.vuttr.controller;
 
-import java.net.URI;
-
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.br.viniciuspadovam.vuttr.domain.tools.RequestToolData;
 import com.br.viniciuspadovam.vuttr.domain.tools.ResponseToolData;
@@ -28,11 +25,11 @@ import com.br.viniciuspadovam.vuttr.domain.tools.Tools;
 import com.br.viniciuspadovam.vuttr.service.ToolsService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 
 @RestController
 @RequestMapping(value = "/api/tools")
@@ -53,21 +50,26 @@ public class ToolsController {
 	@Operation(summary = "Insert a new tool if it do not previously exist.")
 	@ApiResponses(value = { 
 	  @ApiResponse(responseCode = "201", description = "Tool created.", 
-	    content = { @Content(mediaType = "application/json", 
-	    schema = @Schema(implementation = Tools.class)) }),
-	  @ApiResponse(responseCode = "400", description = "Tool already exist.", 
+	    content = @Content),
+	  @ApiResponse(responseCode = "400", description = "Parameters for request body are missing.", 
+	  	content = @Content),
+	  @ApiResponse(responseCode = "409", description = "This tool already exist.", 
 	  	content = @Content) 
 	})
 	@PostMapping
 	@Transactional
-	public ResponseEntity<Tools> insertTool(@RequestBody @Valid RequestToolData data, UriComponentsBuilder uriBuilder) throws BadRequestException {
-		Tools tool = new Tools(data);
-		
-		service.saveTool(tool);
-		
-		URI uri = uriBuilder.path("/api/tools/{id}").buildAndExpand(tool.getId()).toUri(); 
-		
-		return ResponseEntity.created(uri).body(tool);
+	public ResponseEntity<String> insertTool(@RequestBody @Valid RequestToolData data) throws Exception {
+		try {
+			Tools tool = new Tools(data);
+			
+			service.saveTool(tool);
+			
+			return ResponseEntity.status(201).body("Tool created.");
+		} catch(ValidationException validation) {
+			return ResponseEntity.badRequest().body(validation.getMessage());
+		} catch(BadRequestException badreq) {
+			return ResponseEntity.status(409).body(badreq.getMessage());
+		}
 	}
 	
 	@Operation(summary = "Do a logical deletion on a tool by it's id.")

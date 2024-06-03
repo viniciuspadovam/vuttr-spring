@@ -20,6 +20,13 @@ public class Tools {
 		this.tags = tool.tags();
 		this.active = true;
 	}
+
+	public Tools(String title, String link, String description, List<String> tags) {
+		this.title = title;
+		this.link = link;
+		this.description = description;
+		this.tags = tags;
+	}
 	
 	@Id
 	private String id;

@@ -2,15 +2,14 @@ package com.br.viniciuspadovam.vuttr.domain.tools;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record RequestToolData(
-	@NotBlank
+	@NotNull
 	String title,
-	@NotBlank
+	@NotNull
 	String link,
-	@NotBlank
 	String description,
-	@NotBlank
+	@NotNull
 	List<String> tags
 ) {}
